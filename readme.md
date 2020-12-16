@@ -4,41 +4,76 @@
 
 ├─From
 │  │  image.jpg		*摄像头捕捉到的图片*
+
 │  │  windows.py		*主程序代码*
+
 │  │  
+
 │  ├─jpg
+
 │  │      banner0.jpg		*宣传图*
+
 │  │      blue0.png			*下面是各垃圾桶在0--5级容量的展示图片*
+
 │  │      blue1.png
+
 │  │      blue2.png
+
 │  │      blue3.png
+
 │  │      blue4.png
+
 │  │      blue5.png
+
 │  │      Error.png
+
 │  │      green0.png
+
 │  │      green1.png
+
 │  │      green2.png
+
 │  │      green3.png
+
 │  │      green4.png
+
 │  │      green5.png
+
 │  │      red0.png
+
 │  │      red1.png
+
 │  │      red2.png
+
 │  │      red3.png
+
 │  │      red4.png
+
 │  │      red5.png
+
 │  │      yellow0.png
+
 │  │      yellow1.png
+
 │  │      yellow2.png
+
 │  │      yellow3.png
+
 │  │      yellow4.png
+
 │  │      yellow5.png
+
 │  │      
+
 │  └─ui
+
 │          windows_ui.ui		*UI文件*
+
 │          
+
 └─module_test
-        autoChangePic.py		*好像没写完？*
+
+autoChangePic.py		*好像没写完？*
         BDidentify.py			*百度API接口的识别函数*
         CheckCPU.py			*获取CPU温度*
         HCSR04_test.py		*HCSR04超声波传感器测试代码*
