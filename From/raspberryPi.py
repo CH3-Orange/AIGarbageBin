@@ -1,8 +1,10 @@
 import ENV
+import time
 if ENV.__ENV__=="RaspberryPi":
     from gpiozero import MotionSensor,LED,Servo,Button
     import RPi.GPIO as GPIO
     import picamera
+    import os
 
 ABCD_HCSR04_IO=[(16,20),(9,11),(6,5),(13,19)]#(Trig,Echo)
 ABCD_SERVO_IO=[14,15,18,23]
@@ -31,13 +33,15 @@ def InitAll():
         Sers.append("Ser3")
         print("InitAll OK!")
         return
+    global Light,NetLed,Btn
     Light=LED(LightLED_IO)
     NetLed=LED(NetLED_IO)
     Btn=Button(OpenBtn_IO)
     InitCam()
     InitSers()
 
-def InitCam():  
+def InitCam():
+    global Camera
     Camera=picamera.PiCamera()
     Camera.brightness=BRIGHT
 

@@ -19,6 +19,7 @@ def identify(_jpgfile):
     if(response.status_code!=200):#出错
         return -1
     resJson=response.json()
+#     print(resJson)
     res={}
     if(resJson.get("newslist")):
         lajilist=resJson["newslist"]
@@ -27,7 +28,7 @@ def identify(_jpgfile):
 
     # print(res)
     ls=list(res.items())
-    ls=sorted(ls,key= lambda x:x[1][0],reverse=True)
+    ls=sorted(ls,key= lambda x:x[1],reverse=True)
     #print(ls)
     return ls
 
@@ -36,9 +37,13 @@ def lajitype(name):
     url="http://api.tianapi.com/txapi/lajifenlei/index?key="+TXmykey+"&word="
     url+=name
     response=requests.post(url)
+    
     if(response.status_code!=200):#出错
         return -1
     resJson=response.json()
+    print(resJson)
+    if(resJson.get("code")==250):#出错
+        return -1
     res={}
     if(resJson.get("newslist")):
         lajilist=resJson["newslist"]
@@ -49,7 +54,7 @@ def lajitype(name):
     ls=list(res.items())#(垃圾类别编号，出现次数)
     type_to_name=["可回收","有害垃圾","湿垃圾","干垃圾"]
     # 0为可回收、1为有害、2为厨余(湿)、3为其他(干)
-    # ls=sorted(ls,key= lambda x:x[1][0],reverse=True)
+    ls=sorted(ls,key= lambda x:x[1],reverse=True)
     print(ls)
     return ls
 
@@ -103,6 +108,8 @@ def BDident(jpgfile):
 def BDTXidentify(jpgfile):
     ljname= BDident(jpgfile)
     ljtype=lajitype(ljname)
+    if ljtype==-1:
+        return -1
     type_to_name=["可回收","有害垃圾","湿垃圾","干垃圾"]
     return (ljname,ljtype[0][0],type_to_name[ljtype[0][0]])
     
