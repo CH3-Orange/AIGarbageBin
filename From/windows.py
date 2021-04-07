@@ -1,5 +1,5 @@
 import ENV
-from PySide2.QtWidgets import QApplication, QMessageBox,QLabel
+from PySide2.QtWidgets import QApplication, QMessageBox,QLabel,QWidget
 from PySide2.QtUiTools import QUiLoader
 from threading import Thread
 from PySide2.QtGui import QPixmap
@@ -11,6 +11,7 @@ import socket,os,sys,struct,time
 
 import raspberryPi as rasp
 import Identify
+import windows2
 
 
 ########全局变量########
@@ -38,6 +39,8 @@ elif ENV.__ENV__=="Windows":
     PicBasePath=r'D:\Program\Python\RaspberryPi\AIGarbageBin\From\jpg'
     uiPath=r'D:\Program\Python\RaspberryPi\AIGarbageBin\From\ui\windows_ui.ui'
 
+
+
 # #0可回收，1有害，2厨余湿垃圾，3其他干垃圾
 # Type2Num=[0,1,2,3,3]#垃圾类别->舵机编号的映射
 # OppSerNum=[2,3,0,1]#此舵机->对面舵机编号的映射
@@ -62,10 +65,10 @@ class mySignals(QObject):
 # global_ms=mySignals()
 
 
-class Form:
+class Form(QWidget):
 
     def __init__(self):
-        
+        super(Form,self).__init__()
         self.ui = QUiLoader().load(uiPath)
         self.ms=mySignals()
         self.ms.update_pic_signal.connect(self.update_pic_slot)
@@ -75,7 +78,7 @@ class Form:
         self.ms.update_net_signal.connect(self.update_net_slot)
         self.PicList=[self.ui.greenPic,self.ui.bluePic,self.ui.redPic,self.ui.yellowPic]
         self.LabelList=[self.ui.greenLabel,self.ui.blueLabel,self.ui.redLabel,self.ui.yellowLabel]
-        # self.setBtn.clicked.connect(setBtn_click)
+        self.ui.setBtn.clicked.connect(self.setBtn_clicked)
         #self.ui.Button.clicked.connect(self.ButtonClick)
         # global_ms.update_pic_signal.connect(update_pic_slot)
     def update_net_slot(self,str):
@@ -97,14 +100,16 @@ class Form:
         self.ms.update_info_signal.emit(str)
     def update_his_slot(self,str):
         self.ui.hisList.appendPlainText(str)
+        self.ui.hisList.ensureCursorVisible()# 内容超出控件时会向下滚动
     def update_his(self,str):
         self.ms.update_his_signal.emit(str)
     
     def update_pic_slot(self,num,nowdis):
         piclabel=self.PicList[num]
         label=self.LabelList[num]
-        # percent=(1-nowdis/ABCD_clear_dis[num])*5
-        percent=nowdis/100*5
+        # percent=nowdis/100*5
+        percent=(nowdis-rasp.ABCD_full_dis[num])*5/(rasp.ABCD_empty_dis[num]-rasp.ABCD_full_dis[num])
+
         label.setText(ABCD_CHname[num]+":"+str(nowdis)[0:5]+"%")
         percent=round(percent)
         PicPath=PicBasePath+"/"
@@ -119,9 +124,16 @@ class Form:
         piclabel.show()
         # label.setText(str(now_num))
     def update_dis(self,num,nowdis):#垃圾桶编号和当前距离
-        # percent=int(nowdis/ABCD_clear_dis[num]*5)
         print((num,nowdis))
         self.ms.update_pic_signal.emit(num,nowdis)
+    def setBtn_clicked(self):
+        # MessageBox=QMessageBox()
+        # MessageBox.information(self.ui,"这是一个标题","这里有内容")
+        
+        ENV.blockFlag=1#设置后台的进程为阻塞状态
+        self.form2 = windows2.Form2()
+        self.form2.ui.show()
+        # self.form2.exec_()
 
 def BackThread():
     ######初始化#####
@@ -140,19 +152,24 @@ def BackThread():
     rasp.ResetSers()#再次恢复，避免第一次因为电压不稳导致个别舵机没有归位 
     ######初始化#####
     
-    form.update_dis(3,0)
-    form.update_dis(0,0)
-    form.update_dis(1,0)
-    form.update_dis(2,0)
+    form.update_dis(0,100)
+    form.update_dis(1,80)
+    form.update_dis(2,60)
+    form.update_dis(3,50)
     form.update_lajipic(bannerPath)
     _cnt=0
     while True:
-        
+        if ENV.ExitFlag==1: #进程结束信号
+            break
+        while ENV.blockFlag==1:
+            print("后台进程阻塞中...")
+            time.sleep(2)
+            pass
         temp=rasp.getNowINFO()
         form.update_info(temp)
         _cnt=_cnt+1
         # if(Btn.is_pressed):
-        if(_cnt==5): 
+        if(_cnt==10): 
             _cnt=0 
             print (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+"YES")
             if ENV.__ENV__=="RaspberryPi":
@@ -190,6 +207,9 @@ def BackThread():
                 time.sleep(1)
                 # Leds[SerNum].off()
                 rasp.ResetSers()
+                dis=rasp.GetDis(rasp.ABCD_HCSR04_IO[SerNum][0],rasp.ABCD_HCSR04_IO[SerNum][1])
+                form.update_dis(SerNum,dis)
+                #这里要满载判断
             else:
                 pass
             # rasp.Light.off() #关闭背光
@@ -210,3 +230,4 @@ form.ui.show()
 back_thread=Thread(target=BackThread)
 back_thread.start()
 app.exec_()
+ENV.ExitFlag=1

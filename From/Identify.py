@@ -3,7 +3,9 @@ import re
 import jieba
 
 def identify(_jpgfile):
-    
+    '''
+        用天行api进行图片垃圾分类识别
+    '''
     jpg = open(_jpgfile, "rb")
     mykey="9f24a5e1f94efda4a631bf1da207b002"
     jpg64 =  base64.b64encode(jpg.read())
@@ -16,10 +18,12 @@ def identify(_jpgfile):
     # print(body)
     headers = {'content-type': "application/x-www-form-urlencoded"}
     response = requests.post(url,headers=headers, data=body )
-    if(response.status_code!=200):#出错
+    if(response.status_code!=200):#api发送请求出错
         return -1
     resJson=response.json()
 #     print(resJson)
+    if(resJson.get("code")==250):#api无法解析传入的数据（一般是api不能分类成功）
+        return -1
     res={}
     if(resJson.get("newslist")):
         lajilist=resJson["newslist"]
@@ -33,16 +37,19 @@ def identify(_jpgfile):
     return ls
 
 def lajitype(name):
+    '''
+        通过天行api进行垃圾关键字分类判断
+    '''
     TXmykey="9f24a5e1f94efda4a631bf1da207b002"
     url="http://api.tianapi.com/txapi/lajifenlei/index?key="+TXmykey+"&word="
     url+=name
     response=requests.post(url)
     
-    if(response.status_code!=200):#出错
+    if(response.status_code!=200):#api发送请求出错
         return -1
     resJson=response.json()
     print(resJson)
-    if(resJson.get("code")==250):#出错
+    if(resJson.get("code")==250):#api无法解析传入的数据（一般是api不能分类成功）
         return -1
     res={}
     if(resJson.get("newslist")):
@@ -60,6 +67,9 @@ def lajitype(name):
 
 
 def BDident(jpgfile):
+    '''
+        百度识图api，并且将识图的结果进行中文分词，将词频最高的词语返回
+    '''
     # appid = '20248707'
     api_key = 'F5HqGj2qafe4S4XABw2rqX9K'
     secret_key = 'EsnxjFCnyZaZyUrFN3jorYlZKjzCWN1q'
@@ -106,6 +116,9 @@ def BDident(jpgfile):
 
 
 def BDTXidentify(jpgfile):
+    '''
+        调用百度识图api，将百度返回的结果利用天行关键字垃圾分类api进行分类
+    '''
     ljname= BDident(jpgfile)
     ljtype=lajitype(ljname)
     if ljtype==-1:

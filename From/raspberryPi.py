@@ -9,6 +9,8 @@ if ENV.__ENV__=="RaspberryPi":
 ABCD_HCSR04_IO=[(16,20),(9,11),(6,5),(13,19)]#(Trig,Echo)
 ABCD_SERVO_IO=[14,15,18,23]
 ABCD_LED_IO=[1,7,8,25]
+ABCD_empty_dis=[100,100,100,100]
+ABCD_full_dis=[40,40,40,40]
 LightLED_IO=22
 NetLED_IO=10
 OpenBtn_IO=3
@@ -46,6 +48,7 @@ def InitCam():
     Camera.brightness=BRIGHT
 
 def InitSers():
+    Sers=[]
     myCorrection=0.45
     maxPW=(2.0+myCorrection)/1000
     minPW=(1.0-myCorrection)/1000
@@ -64,8 +67,8 @@ def InitSers():
 
 def GetDis(Trig,Echo):
     if ENV.__ENV__ !="RaspberryPi":
-        print("GetDis ("+str(Trig)+","+str(Echo)+"):30")
-        return 30
+        print("GetDis ("+str(Trig)+","+str(Echo)+"):50")
+        return 50
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(Trig,GPIO.OUT)
     GPIO.setup(Echo,GPIO.IN)
