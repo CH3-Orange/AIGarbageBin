@@ -129,11 +129,7 @@ yellow</string>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="3,9">
      <item>
-<<<<<<< HEAD
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-=======
       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0">
->>>>>>> f53759334b0ebe072dfc005f5a8217d32f6b5627
        <item>
         <widget class="QLabel" name="nameLabel">
          <property name="text">
@@ -149,8 +145,6 @@ yellow</string>
          </property>
         </widget>
        </item>
-<<<<<<< HEAD
-=======
        <item>
         <widget class="QPushButton" name="setBtn">
          <property name="sizePolicy">
@@ -173,7 +167,6 @@ yellow</string>
          </property>
         </widget>
        </item>
->>>>>>> f53759334b0ebe072dfc005f5a8217d32f6b5627
       </layout>
      </item>
      <item>
