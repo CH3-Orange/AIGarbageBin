@@ -14,7 +14,7 @@ if ENV.__ENV__=="RaspberryPi":
     # jpgFile='image.png'
     # bannerPath=r"/home/pi/Desktop/AIGarbageBin/From/jpg/banner0.png"
     # PicBasePath=r'/home/pi/Desktop/AIGarbageBin/From/jpg'
-    uiPath=r'/home/pi/Desktop/AIGarbageBin/From/ui/windows_ui.ui'
+    uiPath=r'/home/pi/Desktop/AIGarbageBin/From/ui/windows2_ui.ui'
 elif ENV.__ENV__=="Windows":
     # jpgFile='From\image.png'
     # bannerPath=r"D:\Program\Python\RaspberryPi\AIGarbageBin\From\jpg\banner0.png"
@@ -146,7 +146,7 @@ class Form2(QMainWindow):
         ser,para=self.GetChoseSerAndPara()
         if ser==None or para==None:
             return
-        rasp.STurn(ser,para)
+        rasp.STurn(rasp.Sers[ser],para)
     def ParaSerSave2Up_clicked(self):
         '''
             保存配置为当前舵机的上升参数
@@ -201,7 +201,7 @@ class Form2(QMainWindow):
             MessageBox=QMessageBox()
             MessageBox.critical(self.ui,"错误","不能所有挡板同时抬起")        
         else:
-            rasp.STurn(ser,rasp.UpVal[ser])
+            rasp.STurn(rasp.Sers[ser],rasp.UpVal[ser])
     def CtrlSerReset_clicked(self):
         '''
             控制选择的舵机向上
@@ -213,7 +213,7 @@ class Form2(QMainWindow):
         elif ser==-1:
             rasp.ResetSers()
         else:
-            rasp.STurn(ser,rasp.ResetVal[ser])
+            rasp.STurn(rasp.Sers[ser],rasp.ResetVal[ser])
     def CtrlSerDown_clicked(self):
         '''
             控制选择的舵机向上
@@ -225,7 +225,7 @@ class Form2(QMainWindow):
         elif ser==-1:
             rasp.DownSers()
         else:
-            rasp.STurn(ser,rasp.DownVal[ser])
+            rasp.STurn(rasp.Sers[ser],rasp.DownVal[ser])
     
     def UpdateHCSR_IO_clicked(self):
         rasp.ABCD_HCSR04_IO[0]=(self.ui.TrigLeftUp_IO.value()

@@ -48,7 +48,6 @@ def InitCam():
     Camera.brightness=BRIGHT
 
 def InitSers():
-    Sers=[]
     myCorrection=0.45
     maxPW=(2.0+myCorrection)/1000
     minPW=(1.0-myCorrection)/1000
