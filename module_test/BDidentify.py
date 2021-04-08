@@ -11,7 +11,20 @@ def lajitype(name):
     if(response.status_code!=200):#出错
         return -1
     resJson=response.json()
-    print(resJson)
+    res={}
+    if(resJson.get("newslist")):
+        lajilist=resJson["newslist"]
+        for item in lajilist:
+            res[item.get("type")]=res.get(item.get("type"),0)+1
+
+    # print(res)
+    ls=list(res.items())#(垃圾类别编号，出现次数)
+    type_to_name=["可回收","有害垃圾","湿垃圾","干垃圾"]
+    # 0为可回收、1为有害、2为厨余(湿)、3为其他(干)
+    # ls=sorted(ls,key= lambda x:x[1][0],reverse=True)
+    print(ls)
+    return ls
+
 
 def BDident(jpgfile):
     appid = '20248707'
@@ -40,7 +53,7 @@ def BDident(jpgfile):
     lajiText=""
     if(resJson.get("result")):
         lajilist=resJson["result"]
-        print(lajilist)
+        # print(lajilist)
         for item in lajilist:
             lajiText+=","+item.get("keyword")
             res[item.get("keyword")]=(item.get("score"),-1)
@@ -52,20 +65,21 @@ def BDident(jpgfile):
             words[word]=words.get(word,0)+1
     wordlist=list(words.items())
     wordlist=sorted(wordlist,key = lambda x:x[1],reverse=True)
-    # print("------")
-    # print(wordlist)
-    # 关键词垃圾查询
-    
+    print("---分词结果---")
+    print(wordlist)
+    print(wordlist[0][0])
+    print("-------------")
+    return wordlist[0][0]
 
-    ls=list(res.items())
-    ls=sorted(ls,key = lambda x:x[1][0],reverse=True)
-    print(ls)
-    return ls
+    # ls=list(res.items())
+    # ls=sorted(ls,key = lambda x:x[1][0],reverse=True)
+    # print(ls)
+    # # return ls
     # for i in response.json()['result']:
     #     strr=str(i)# 识别结果序列
     #     result_list = {}
     #     result_list['name'] = re.findall('\{\'score\': .*?, \'root\': .*?, \'keyword\': \'(.*?)\'}', strr)
     #     print(result_list['name'])
 if __name__=="__main__":
-    # BDident('D:\Program\Python\RaspberryPi\image.jpg')
-    lajitype("牙膏")
+    ljname= BDident('D:\Program\Python\image1.jpg')
+    lajitype(ljname)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>939</width>
-    <height>545</height>
+    <width>899</width>
+    <height>533</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -129,7 +129,11 @@ yellow</string>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="3,9">
      <item>
+<<<<<<< HEAD
       <layout class="QHBoxLayout" name="horizontalLayout_2">
+=======
+      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0">
+>>>>>>> f53759334b0ebe072dfc005f5a8217d32f6b5627
        <item>
         <widget class="QLabel" name="nameLabel">
          <property name="text">
@@ -145,6 +149,31 @@ yellow</string>
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
+=======
+       <item>
+        <widget class="QPushButton" name="setBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>设置</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+>>>>>>> f53759334b0ebe072dfc005f5a8217d32f6b5627
       </layout>
      </item>
      <item>
