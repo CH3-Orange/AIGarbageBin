@@ -185,12 +185,12 @@ class Form2(QMainWindow):
         except Exception as e:
             MessageBox=QMessageBox()
             MessageBox.critical(self.ui,"错误",repr(e))
-            return None,None
+            return None
 
         if chose<-1 or chose>3:
             MessageBox=QMessageBox()
             MessageBox.critical(self.ui,"错误","不在范围内的选择："+str(chose))
-            return None,None
+            return None
         return chose
     def CtrlSerUp_clicked(self):
         '''
@@ -199,7 +199,8 @@ class Form2(QMainWindow):
         ser=self.GetChoseSer()
         if ser==None or ser==-1:
             MessageBox=QMessageBox()
-            MessageBox.critical(self.ui,"错误","不能所有挡板同时抬起")        
+            MessageBox.critical(self.ui,"错误","不能所有挡板同时抬起")
+            return
         else:
             rasp.STurn(rasp.Sers[ser],rasp.UpVal[ser])
     def CtrlSerReset_clicked(self):
