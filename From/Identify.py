@@ -126,7 +126,10 @@ def BDTXidentify(jpgfile):
     type_to_name=["可回收","有害垃圾","湿垃圾","干垃圾"]
     return (ljname,ljtype[0][0],type_to_name[ljtype[0][0]])
     
-
+def TXidentify(jpgfile):
+    res=identify(jpgfile)
+    type_to_name=["可回收","有害垃圾","湿垃圾","干垃圾"]
+    return (res[0][0],res[0][1][1],type_to_name[res[0][1][1]])
 
 if __name__=="__main__":
-    print(BDTXidentify(r'D:\Program\Python\RaspberryPi\AIGarbageBin\From\test.jpg'))
+    print(TXidentify(r'D:\Program\Python\RaspberryPi\AIGarbageBin\From\test.jpg'))

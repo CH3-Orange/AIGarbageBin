@@ -38,10 +38,16 @@ def InitAll():
     global Light,NetLed,Btn
     Light=LED(LightLED_IO)
     NetLed=LED(NetLED_IO)
-    Btn=Button(OpenBtn_IO)
+    InitOpenBtn()
     InitCam()
     InitSers()
 
+def InitOpenBtn():
+    if ENV.__ENV__!="RaspberryPi":
+        print("OpenBtn Inited!")
+        return
+    Btn=Button(OpenBtn_IO)
+    
 def InitCam():
     global Camera
     Camera=picamera.PiCamera()
