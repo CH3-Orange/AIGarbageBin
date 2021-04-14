@@ -1,6 +1,11 @@
 import requests,base64
 import re
 import jieba
+import time
+import json
+import numpy as np
+import tensorflow as tf
+from PIL import Image
 
 def identify(_jpgfile):
     '''
@@ -131,5 +136,38 @@ def TXidentify(jpgfile):
     type_to_name=["可回收","有害垃圾","湿垃圾","干垃圾"]
     return (res[0][0],res[0][1][1],type_to_name[res[0][1][1]])
 
+def SJWLInit():
+    # 加载模型并分配张量
+    global interpreter,input_details,output_details,load_dict
+    interpreter = tf.lite.Interpreter(model_path="./converted_model.tflite")
+    interpreter.allocate_tensors()
+    # 获取输入输出张量
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
+    #加载分类
+    with open("./garbage_classify_rule.json", 'r',encoding='utf-8') as load_f:
+            load_dict = json.load(load_f)
+
+def SJWLidentify(jpgfile):
+    
+    image = Image.open(jpgfile).convert('RGB').resize(
+                (224, 224), Image.ANTIALIAS)
+    image = np.array(image,dtype=np.float32).reshape(input_details[0]['shape'])
+    # start =time.process_time #计算时间
+    interpreter.set_tensor(input_details[0]['index'],image)
+    interpreter.invoke()
+    output_data = interpreter.get_tensor(output_details[0]['index'])
+    pred_label = np.argmax(output_data[0])
+    # elapsed = (time.process_time - start)
+    # print("Time used:",elapsed,"ms")
+    print(pred_label)
+    print(load_dict[str(pred_label)])
+    laji=load_dict[str(pred_label)].split('/',1)
+    type_to_name={"可回收物":0,"有害垃圾":1,"厨余垃圾":2,"其他垃圾":3}
+    return(laji[1],type_to_name[laji[0]],laji[0]) 
+
+
 if __name__=="__main__":
-    print(TXidentify(r'D:\Program\Python\RaspberryPi\AIGarbageBin\From\test.jpg'))
+    SJWLInit()
+    print(SJWLidentify(r'D:\Program\Python\RaspberryPi\AIGarbageBin\From\image.png'))
+    print(SJWLidentify(r'D:\Program\Python\RaspberryPi\AIGarbageBin\From\image_test.png'))

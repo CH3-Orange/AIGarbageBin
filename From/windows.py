@@ -158,6 +158,7 @@ def BackThread():
     form.update_dis(3,50)
     form.update_lajipic(bannerPath)
     _cnt=0
+    Identify.SJWLInit()
     while True:
         if ENV.ExitFlag==1: #进程结束信号
             break
@@ -177,7 +178,8 @@ def BackThread():
             # lajilist=identify(jpgFile)
             # print(lajilist)
             # _lajiType=lajilist[0][1][1]
-            lajilist=Identify.BDTXidentify(jpgFile)#垃圾分类查询返回 ('名称', 代号, '类别')
+            # lajilist=Identify.BDTXidentify(jpgFile)#垃圾分类查询返回 ('名称', 代号, '类别')
+            lajilist=Identify.SJWLidentify(jpgFile)
             print(lajilist)
             if lajilist !=-1:
                 ljcnt[lajilist[1]]+=1 #对应垃圾类别数量+1
