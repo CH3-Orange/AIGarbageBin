@@ -2,7 +2,7 @@ import ENV
 from PySide2.QtWidgets import QApplication, QMessageBox,QLabel,QWidget
 from PySide2.QtUiTools import QUiLoader
 from threading import Thread
-from PySide2.QtGui import QPixmap
+from PySide2.QtGui import QPixmap,QMovie
 from PySide2.QtCore import QFile,QThread,Signal,QObject
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -33,11 +33,13 @@ if ENV.__ENV__=="RaspberryPi":
     bannerPath=r"/home/pi/Desktop/AIGarbageBin/From/jpg/banner0.png"
     PicBasePath=r'/home/pi/Desktop/AIGarbageBin/From/jpg'
     uiPath=r'/home/pi/Desktop/AIGarbageBin/From/ui/windows_ui.ui'
+    MoviePath=r"D:\Program\Python\RaspberryPi\AIGarbageBin\test.gif"
 elif ENV.__ENV__=="Windows":
-    jpgFile='From\image.png'
+    jpgFile=r'D:\Program\Python\RaspberryPi\AIGarbageBin\From\image.jpg'
     bannerPath=r"D:\Program\Python\RaspberryPi\AIGarbageBin\From\jpg\banner0.png"
     PicBasePath=r'D:\Program\Python\RaspberryPi\AIGarbageBin\From\jpg'
     uiPath=r'D:\Program\Python\RaspberryPi\AIGarbageBin\From\ui\windows_ui.ui'
+    MoviePath=r"D:\Program\Python\RaspberryPi\AIGarbageBin\ONE.gif"
 
 
 
@@ -81,6 +83,9 @@ class Form(QWidget):
         self.ui.setBtn.clicked.connect(self.setBtn_clicked)
         #self.ui.Button.clicked.connect(self.ButtonClick)
         # global_ms.update_pic_signal.connect(update_pic_slot)
+        gif=QMovie(MoviePath)
+        self.ui.moviePlayer.setMovie(gif)
+        gif.start()
     def update_net_slot(self,str):
         self.ui.NetLabel.setText(str)
     def update_net(self,str):
@@ -101,6 +106,7 @@ class Form(QWidget):
     def update_his_slot(self,str):
         self.ui.hisList.appendPlainText(str)
         self.ui.hisList.ensureCursorVisible()# 内容超出控件时会向下滚动
+        self.ui.hisList.scrollToBottom()# 内容超出控件时会自动向下滚动
     def update_his(self,str):
         self.ms.update_his_signal.emit(str)
     
@@ -156,7 +162,10 @@ def BackThread():
     form.update_dis(1,80)
     form.update_dis(2,60)
     form.update_dis(3,50)
-    form.update_lajipic(bannerPath)
+    # form.update_lajipic(bannerPath) #显示头图
+
+   
+
     _cnt=0
     Identify.SJWLInit()
     while True:
@@ -170,7 +179,7 @@ def BackThread():
         form.update_info(temp)
         _cnt=_cnt+1
         # if(Btn.is_pressed):
-        if(_cnt==10): 
+        if(_cnt==2): 
             _cnt=0 
             print (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+"YES")
             if ENV.__ENV__=="RaspberryPi":
@@ -191,12 +200,14 @@ def BackThread():
                 form.update_his("{0} {1} {3} {2} OK!".format(str(ljAllcnt),lajilist[0],ljcnt[lajilist[1]],rasp.Type2Str[lajilist[1]]))
                 def change_lajipic_thread():
                     if ENV.__ENV__=="RaspberryPi":
-                        form.update_lajipic(jpgFile)
+                        # form.update_lajipic(jpgFile) #显示垃圾照片
+                        pass
                     if ENV.__ENV__=="Windows":
                         # form.update_lajipic(r"D:\Program\Python\RaspberryPi\AIGarbageBin\From\image.png")
-                        form.update_lajipic(jpgFile)
+                        # form.update_lajipic(jpgFile) #显示垃圾照片
+                        pass
                     time.sleep(3)
-                    form.update_lajipic(bannerPath)#恢复展示宣传图
+                    # form.update_lajipic(bannerPath)#恢复展示宣传图
                 ChangeLajipicThread=Thread(target=change_lajipic_thread)
                 ChangeLajipicThread.start()
                 rasp.STurn(rasp.Sers[SerNum],rasp.DownVal[SerNum])

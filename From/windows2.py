@@ -70,7 +70,7 @@ class Form2(QMainWindow):
         self.ui.HCSRGo.clicked.connect(self.HCSRGo_clicked)
         self.ui.FlagEmptyDis.clicked.connect(self.FlagEmptyDis_click)
         self.ui.FlagFullDis.clicked.connect(self.FlagFullDis_click)
-        self.ui.UpdateOpenBtn_IO.clicked.connect(self.UpdateOpenBtn_IO_clicked)
+        # self.ui.UpdateOpenBtn_IO.clicked.connect(self.UpdateOpenBtn_IO_clicked)
 
         # self.ui.closeEvent=closeEvent
         self.reflash()
@@ -101,7 +101,7 @@ class Form2(QMainWindow):
         self.ui.TrigRightDown_IO.setValue(rasp.ABCD_HCSR04_IO[3][0])
         self.ui.EchoRightDown_IO.setValue(rasp.ABCD_HCSR04_IO[3][1])
 
-        self.ui.OpenBtn_IO.setValue(rasp.OpenBtn_IO)
+        # self.ui.OpenBtn_IO.setValue(rasp.OpenBtn_IO)
 
 
     def UpdateSers_IO_clicked(self):
