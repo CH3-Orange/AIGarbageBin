@@ -10,6 +10,7 @@ import time,base64,json,requests
 import socket,os,sys,struct,time
 
 import raspberryPi as rasp
+import RaspberryClient_Fin as cli
 import Identify
 import windows2
 
@@ -106,7 +107,7 @@ class Form(QWidget):
     def update_his_slot(self,str):
         self.ui.hisList.appendPlainText(str)
         self.ui.hisList.ensureCursorVisible()# 内容超出控件时会向下滚动
-        self.ui.hisList.scrollToBottom()# 内容超出控件时会自动向下滚动
+        # self.ui.hisList.scrollToBottom()# 内容超出控件时会自动向下滚动
     def update_his(self,str):
         self.ms.update_his_signal.emit(str)
     
@@ -167,6 +168,8 @@ def BackThread():
    
 
     _cnt=0
+    cnt=0 #服务器通信间隔计数器
+    CHATTIMEOUT=10 #服务器通信间隔
     Identify.SJWLInit()
     while True:
         if ENV.ExitFlag==1: #进程结束信号
@@ -206,9 +209,10 @@ def BackThread():
                         # form.update_lajipic(r"D:\Program\Python\RaspberryPi\AIGarbageBin\From\image.png")
                         # form.update_lajipic(jpgFile) #显示垃圾照片
                         pass
+                    cli.socket_client("02",str(lajilist))
                     time.sleep(3)
                     # form.update_lajipic(bannerPath)#恢复展示宣传图
-                ChangeLajipicThread=Thread(target=change_lajipic_thread)
+                ChangeLajipicThread=Thread(target=change_lajipic_thread,)
                 ChangeLajipicThread.start()
                 rasp.STurn(rasp.Sers[SerNum],rasp.DownVal[SerNum])
                 time.sleep(1)
@@ -230,11 +234,9 @@ def BackThread():
         else:
             print (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+"no")
         cnt=cnt+1
-        # if(cnt==CHATTIMEOUT):#与服务器通信
-        #     cnt=0
-        #     socket_client("00")
-
-
+        if(cnt==CHATTIMEOUT):#与服务器通信
+            cnt=0
+            cli.socket_client("00")
         time.sleep(TIMEOUT)
 
 app = QApplication([])
